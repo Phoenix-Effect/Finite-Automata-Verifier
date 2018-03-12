@@ -12,6 +12,7 @@ Automaton::Automaton(Parser *p) {
     this->fillStateNames();
     this->dfa->alphabet = parser->alphabet;
     this->dfa->initialState = this->parser->initialState;
+    this->dfa->finStates = this->parser->finalStates;
     this->makeDFATuple();
 }
 
@@ -62,11 +63,13 @@ void Automaton::makeDFATuple() {
 
 string Automaton::printSet(set<string> s) {
     set <string> ::iterator itr;
-    string ret = "";
+    string ret = "{";
     for(itr = s.begin(); itr != s.end(); itr++){
         ret += *itr;
+        ret += ",";
     }
-
+    ret.pop_back();
+    ret += "}";
     return ret;
 }
 
@@ -103,16 +106,43 @@ void Automaton::addTransitionsToDfa(set<string> intSet, string alphabet, set<str
 }
 
 //Prints the DFA
-void Automaton::PrintDFA() {
+void Automaton::PrintDFA(string s) {
+    cout << "% Input alphabet" << endl;
+    for(vector<string>::size_type h = 0; h != this->dfa->alphabet.size(); h++){
+        cout << this->dfa->alphabet[h] << endl;
+    }
+
+    cout << s << endl;
+    cout << "% Transition function" << endl;
     for(vector<NFA_Transition*>::size_type z = 0; z != this->dfa->transitions.size(); z++){
         cout << printSet(this->dfa->transitions[z]->initialStates);
-        cout << " - " << this->dfa->transitions[z]->alphabet << " - ";
+        cout << " " << this->dfa->transitions[z]->alphabet << " ";
         cout << printSet(this->dfa->transitions[z]->newStates);
         cout << endl;
     }
+
+    cout << "% Initial state" << endl << this->dfa->initialState << endl;
+
+    cout << "% Final states" << endl;
+    printFinalStates();
 }
 
-//Updates the accepting states in the new dfa
-void Automaton::updateAcceptingStates() {
-    //TODO makes the
+//prints final states
+void Automaton::printFinalStates() {
+    bool toPrint;
+    for(vector<set<string>>::size_type z = 0; z != this->dfa->states.size(); z++){
+        toPrint = true;
+        set <string> ::iterator itr;
+        for(itr = this->dfa->states[z].begin(); itr != this->dfa->states[z].end(); itr++){
+            for(vector<string>::size_type x = 0; x != this->dfa->finStates.size(); x++){
+                if(*itr == this->dfa->finStates[x]){
+                    toPrint = false;
+                }
+            }
+        }
+
+        if(toPrint){
+            cout << printSet(this->dfa->states[z]) << endl;
+        }
+    }
 }

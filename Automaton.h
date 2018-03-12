@@ -24,6 +24,7 @@ struct DFA_Tuple{
     vector<string> alphabet;
     vector<NFA_Transition*> transitions;
     string initialState;
+    vector<string> finStates;
 };
 
 class Automaton {
@@ -37,11 +38,11 @@ private:
     set<string> stateAndAlphaToNewStates(string state, string alphabet);
     bool isItAnElement(set<string> U);
     void addTransitionsToDfa(set<string> intSet, string alphabet, set<string> newStates);
-    void updateAcceptingStates();
+    void printFinalStates();
 
 public:
     Automaton(Parser * p);
-    void PrintDFA();
+    void PrintDFA(string s);
 };
 
 

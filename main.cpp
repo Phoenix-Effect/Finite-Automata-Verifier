@@ -1,3 +1,7 @@
+//
+// Created by Suhail Ghafoor on 3/6/18.
+//
+
 #include <iostream>
 #include <fstream>
 #include "Parser.h"
@@ -13,13 +17,16 @@ int main() {
     ifstream in("/Users/Suhail/Documents/University/CSE355/Optional Project/project files/exmp01_M1.txt");
     cin.rdbuf(in.rdbuf());
 
+
+    //Change output buffer to file to print the new dfa
+    //freopen("1210107207_Milestone1_Dp.txt","w",stdout);
     auto * parser = new Parser();
     readLines(parser);
 
     auto * fa = new Automaton(parser);
-    fa->PrintDFA();
+    //fa->PrintDFA("% Specification automaton");
 
-    cout << "Done" << endl;
+    cout << " * Done * " << endl;
     return 0;
 }
 
