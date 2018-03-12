@@ -13,20 +13,27 @@ void readLines(Parser * p);
 
 int main() {
 
-    //TODO: Change input buffer before submitting
-    ifstream in("/Users/Suhail/Documents/University/CSE355/Optional Project/project files/exmp01_M1.txt");
-    cin.rdbuf(in.rdbuf());
+//    //TODO: Change input buffer before submitting
+//    ifstream in("/Users/Suhail/Documents/University/CSE355/Optional Project/project files/exmp01_M1.txt");
+//    cin.rdbuf(in.rdbuf());
 
-
-    //Change output buffer to file to print the new dfa
-    //freopen("1210107207_Milestone1_Dp.txt","w",stdout);
     auto * parser = new Parser();
     readLines(parser);
 
     auto * fa = new Automaton(parser);
-    //fa->PrintDFA("% Specification automaton");
 
-    cout << " * Done * " << endl;
+    //Print shortest string to screen and then to file
+    cout << "Shortest string: ";
+    fa->shortestString();
+
+    //Change output buffer to file to print the new dfa
+    freopen("1210107207_Milestone1_Dp.txt","w",stdout);
+    fa->PrintDFA("% Specification automaton");
+
+    freopen("1210107207_Milestone1_str.txt","w",stdout);
+    cout << "Shortest string: ";
+    fa->shortestString();
+
     return 0;
 }
 

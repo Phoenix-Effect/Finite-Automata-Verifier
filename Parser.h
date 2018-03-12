@@ -7,19 +7,9 @@
 
 #include <iostream>
 #include <vector>
+#include "Structs.h"
 
 using namespace std;
-
-struct Transition{
-    string initialState;
-    string alphabet;
-    string nState;
-    Transition(string inS, string alph, string nS ){
-        initialState = inS;
-        alphabet = alph;
-        nState = nS;
-    }
-};
 
 class Parser {
 private:

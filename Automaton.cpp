@@ -146,3 +146,11 @@ void Automaton::printFinalStates() {
         }
     }
 }
+
+void Automaton::shortestString() {
+    auto graph = new DFA(dfa);
+    string shortString = graph->giveShortestString();
+    if(shortString.length() == 0)
+        shortString = "epsilon";
+    cout << shortString << endl;
+}

@@ -5,27 +5,15 @@
 #ifndef CODE_AUTOMATON_H
 #define CODE_AUTOMATON_H
 
+#include "DFA.h"
 #include "Parser.h"
+#include "Structs.h"
 #include <algorithm>
 #include <set>
 #include <iostream>
 #include <iterator>
 
 using namespace std;
-
-struct NFA_Transition{
-    set<string> initialStates;
-    string alphabet;
-    set<string> newStates;
-};
-
-struct DFA_Tuple{
-    vector<set<string> > states;
-    vector<string> alphabet;
-    vector<NFA_Transition*> transitions;
-    string initialState;
-    vector<string> finStates;
-};
 
 class Automaton {
 private:
@@ -43,6 +31,7 @@ private:
 public:
     Automaton(Parser * p);
     void PrintDFA(string s);
+    void shortestString();
 };
 
 
