@@ -1,6 +1,11 @@
-//
-// Created by Suhail Ghafoor on 3/11/18.
-//
+/**
+    CSE355 optional project, DFA.h DFA.cpp
+    Purpose: This class makes the actual DFA graph from the tuple. The graph
+    is used to then generate the shortest string in the language.
+
+    @author Suhail Ghafoor
+    @version 0.1 03/11/18
+*/
 
 #ifndef CODE_DFA_H
 #define CODE_DFA_H
@@ -24,7 +29,6 @@ private:
 public:
     DFA(DFA_Tuple * t);
     string giveShortestString();
-
 };
 
 

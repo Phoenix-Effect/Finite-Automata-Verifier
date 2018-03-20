@@ -1,6 +1,12 @@
-//
-// Created by Suhail Ghafoor on 3/9/18.
-//
+/**
+    CSE355 optional project, Automaton.h Automaton.cpp
+    Purpose: This class makes a tuple from the parser which is the parsed
+    input. It also takes care of converting NFA to DFA if required and
+    has all the print functions. It is the core of the program
+
+    @author Suhail Ghafoor
+    @version 0.1 03/09/18
+*/
 
 #ifndef CODE_AUTOMATON_H
 #define CODE_AUTOMATON_H
@@ -12,6 +18,8 @@
 #include <set>
 #include <iostream>
 #include <iterator>
+#include <string>
+#include <sstream>
 
 using namespace std;
 
@@ -26,11 +34,15 @@ private:
     set<string> stateAndAlphaToNewStates(string state, string alphabet);
     bool isItAnElement(set<string> U);
     void addTransitionsToDfa(set<string> intSet, string alphabet, set<string> newStates);
-    void printFinalStates();
+    void printFinalStates(bool b);
+    string deadStateName;
+    bool printEpsilon;
+    string nicePrint(set<string> s, bool b);
+    vector<string> niceSetNames;
 
 public:
-    Automaton(Parser * p);
-    void PrintDFA(string s);
+    Automaton(Parser *p, string s, bool b);
+    void PrintDFA(string s, bool b);
     void shortestString();
 };
 
