@@ -13,7 +13,7 @@
  * Constructor that makes a graph from the tuple object
  * @param t - The tuple object
  */
-DFA::DFA(DFA_Tuple *t) {
+DFA::DFA(DFA_flat_tuple *t) {
     this->tuple = t;
     makeGraph();
 }
@@ -27,24 +27,6 @@ void DFA::makeGraph() {
     setInitialStates();
     setFinalStates();
     makeShortestString();
-}
-
-/**
- * Takes in a set and returns a string representation of it. A little different
- * from printset since this allows the program to add extra hashing to the string
- * to make sure there is no conflict between 2 different DFAs.
- * @param S - Set of states
- * @return String representing the set
- */
-string DFA::setToString(set<string> S) {
-    string ret = "";
-    set<string>::iterator s;
-
-    for(s = S.begin(); s != S.end(); ++s) {
-        ret += *s;
-        ret += "#";
-    }
-    return ret;
 }
 
 /**
@@ -95,8 +77,8 @@ void DFA::addTranisitions() {
 
     //Next add the transition function to all states
     for(vector<NFA_Transition*>::size_type x = 0; x != this->tuple->transitions.size(); x++){
-        string inState = setToString(this->tuple->transitions[x]->initialStates);
-        string nState = setToString(this->tuple->transitions[x]->newStates);
+        string inState = this->tuple->transitions[x]->initState;
+        string nState = this->tuple->transitions[x]->nState;
         DFA_node * point = nullptr;
         DFA_node * addingPoint = nullptr;
 
@@ -121,7 +103,7 @@ void DFA::addTranisitions() {
 void DFA::addStates() {
     //First make all states and put them in a vector so they're accessible
     for(vector<set<string>>::size_type z = 0; z != this->tuple->states.size(); z++){
-        string name = setToString(this->tuple->states[z]);
+        string name = this->tuple->states[z];
         DFA_node * node = new DFA_node(name);
         states.push_back(node);
     }
@@ -132,9 +114,7 @@ void DFA::addStates() {
  */
 void DFA::setInitialStates() {
     //assign initial states and accepting states
-    set<string> initialStateSet;
-    initialStateSet.insert(this->tuple->initialState);
-    string initialStateString = setToString(initialStateSet);
+    string initialStateString = this->tuple->initialState;
 
     for(vector<DFA_node*>::size_type h = 0; h != this->states.size(); h++){
         if(this->states[h]->name == initialStateString){
@@ -148,25 +128,10 @@ void DFA::setInitialStates() {
  * since the program generates the compliment of given machine
  */
 void DFA::setFinalStates() {
-    for(vector<set<string>>::size_type y = 0; y != this->tuple->states.size(); y++){
-        set<string>::iterator s;
-        set<string> S = this->tuple->states[y];
-        bool isThisSetFinal = true;
-
-        for(s = S.begin(); s != S.end(); ++s){
-            for(vector<string>::size_type x = 0; x != this->tuple->finStates.size(); x++){
-                if(*s == this->tuple->finStates[x]){
-                    isThisSetFinal = false;
-                }
-            }
-        }
-
-        if(isThisSetFinal){
-            string makeItFinal = setToString(S);
-            for(vector<DFA_node*>::size_type y = 0; y != this->states.size(); y++){
-                if(this->states[y]->name == makeItFinal){
-                    this->states[y]->accepting = true;
-                }
+    for(vector<string>::size_type z = 0; z != this->tuple->finStates.size(); z++){
+        for(vector<DFA_node*>::size_type y = 0; y != this->states.size(); y++){
+            if(this->states[y]->name == this->tuple->finStates[z]){
+                this->states[y]->accepting = true;
             }
         }
     }
@@ -188,12 +153,15 @@ string DFA::giveShortestString() {
     if(shortestStrings.empty()){
         return "No acceptable string in language";
     }
+
     string shortestString = shortestStrings.at(0);
     for(vector<string>::size_type z = 0; z != shortestStrings.size(); z++){
         if(shortestStrings[z].length() < shortestString.length()){
             shortestString = shortestStrings[z];
         }
     }
+
+
 
     return shortestString;
 }

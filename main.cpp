@@ -5,29 +5,28 @@
     shortest string in the new DFA.
 
     @author Suhail Ghafoor
-    @version 0.1 03/06/18
+    @version 0.2 04/04/18
 */
 #include <iostream>
 #include <fstream>
 #include "Parser.h"
 #include "Automaton.h"
+#include "Intersector.h"
+#include "helper.h"
 
 using namespace std;
-void readLines(Parser * p);
 
 /*
  *  Config box begin, change settings here.
  */
 
 // I/O
-bool outputDFAToFile = true;
-bool outputShortestStringToFile = true;
-bool takeInputFromFile = false;
-string inputFilePath = "/Users/Suhail/Documents/University/CSE355/Optional Project/Code/document.txt";
+bool takeInputFromFile = true;
+string inputFilePath = "/Users/Suhail/Documents/University/CSE355/Optional Project/project files/exmp01_M2.txt";
 
 // Other settings
 bool printEpsilonInsteadOfEmptyString = true;
-bool printStateSets = true;
+bool nicefyNames = true;
 string deadStateName = "Dead-State";
 
 /*
@@ -42,66 +41,52 @@ int main() {
         cin.rdbuf(in.rdbuf());
     }
 
-    auto * parser = new Parser();
-    readLines(parser);
+    //make parser for both specifications so we can read it from input
+    auto * specificationAutomaton = new Parser();
+    auto * systemAutomaton = new Parser();
 
-    auto * fa = new Automaton(parser, deadStateName, printEpsilonInsteadOfEmptyString);
+    //fills up parser from given input file
+    readLines(specificationAutomaton, systemAutomaton);
 
-    //Print shortest string to screen and then to file
+    //this class turns NFA to DFA if required and also a tuple which
+    // is used by the graph
+    auto * specification = new Automaton(specificationAutomaton, deadStateName, printEpsilonInsteadOfEmptyString);
+    auto * system = new Automaton(systemAutomaton, deadStateName, printEpsilonInsteadOfEmptyString);
+
+    //get tuple from specifications
+    auto * specTuple = specification->giveTuple();
+    auto * systemTuple = system->giveTuple();
+
+    //print the specs and system to a js file before it is altered by the intersector
+    jsonPrint(specTuple, "specNormal.js");
+    jsonPrint(systemTuple, "system.js");
+
+    //make the new intersected dfa and find the shortest string
+    auto * intersected = new Intersector(specTuple, systemTuple, nicefyNames);
+    auto * dfa = new DFA(intersected->giveIntersected());
+    string shortest = dfa->giveShortestString();
+
+    //print the new specs and the intersected tuple to a file
+    jsonPrint(specTuple, "specs.js");
+    jsonPrint(intersected->giveIntersected(), "intersected.js");
+
+    //output to console
+    if(shortest.empty() || shortest == "Not yet traversed"){
+        cout << "The system satisfies the specification!";
+    } else{
+        cout << "The system does not satisfy the specification!" << endl;
+        cout << "The counterexample that demonstrates that the specification does not hold is: " << shortest;
+    }
+
+    freopen("1210107207_Milestone2_str.txt","w",stdout);
     cout << "Shortest string: ";
-    fa->shortestString();
+    cout << shortest;
 
-    //Change output buffer to file to print the new dfa
-    if(outputDFAToFile){
-        freopen("1210107207_Milestone1_Dp.txt","w",stdout);
-    }
-    fa->PrintDFA("% Specification automaton", printStateSets);
-
-
-    if(outputShortestStringToFile){
-        freopen("1210107207_Milestone1_str.txt","w",stdout);
-        cout << "Shortest string: ";
-        fa->shortestString();
-    }
+    freopen("1210107207_Milestone2_M.txt","w",stdout);
+    printMachine(intersected->giveIntersected());
 
     return 0;
 }
 
-//This function reads the input line by line and hands each line to
-// gives them to the parser object
-void readLines(Parser * p){
-    string line;
-    int type = -1;
 
-    while (getline(cin, line)) {
-        if(line.empty()) break;
-        if(line.find("Input alphabet") != string::npos){
-            type = 0;
-        } else if(line.find("Specification automaton") != string::npos){
-            type = -1;
-        } else if(line.find("Transition function") != string::npos){
-            type = 1;
-        } else if(line.find("Initial state") != string::npos){
-            type = 2;
-        } else if(line.find("Final states") != string::npos){
-            type = 3;
-        } else{
-            switch(type){
-                case 0:
-                    p->addAlphabet(line);
-                    break;
-                case 1:
-                    p->addTransitions(line);
-                    break;
-                case 2:
-                    p->setInitial(line);
-                    break;
-                case 3:
-                    p->addFinalStates(line);
-                    break;
-                default:
-                    ;
-            }
-        }
-    }
-}
+

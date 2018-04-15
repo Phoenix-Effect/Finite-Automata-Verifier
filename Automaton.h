@@ -39,11 +39,12 @@ private:
     bool printEpsilon;
     string nicePrint(set<string> s, bool b);
     vector<string> niceSetNames;
+    string setToString(set<string> s);
 
 public:
     Automaton(Parser *p, string s, bool b);
     void PrintDFA(string s, bool b);
-    void shortestString();
+    DFA_flat_tuple * giveTuple();
 };
 
 

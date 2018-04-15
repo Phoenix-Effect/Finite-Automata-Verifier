@@ -97,4 +97,18 @@ struct DFA_Tuple{
     vector<string> finStates;
 };
 
+struct Flat_transition{
+    string initState;
+    string alphabet;
+    string nState;
+};
+
+struct DFA_flat_tuple{
+    vector<string> states;
+    vector<string> alphabet;
+    vector<Flat_transition*> transitions;
+    string initialState;
+    vector<string> finStates;
+};
+
 #endif //CODE_STRUCTS_H

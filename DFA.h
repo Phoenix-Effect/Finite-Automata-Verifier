@@ -16,9 +16,8 @@
 
 class DFA {
 private:
-    DFA_Tuple * tuple;
+    DFA_flat_tuple * tuple;
     void makeGraph();
-    string setToString(set<string> S);
     vector<DFA_node*> states;
     void addTranisitions();
     void addStates();
@@ -27,7 +26,7 @@ private:
     void makeShortestString();
 
 public:
-    DFA(DFA_Tuple * t);
+    DFA(DFA_flat_tuple * t);
     string giveShortestString();
 };
 

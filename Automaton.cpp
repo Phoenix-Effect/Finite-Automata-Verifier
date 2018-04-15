@@ -205,18 +205,6 @@ void Automaton::printFinalStates(bool b) {
 }
 
 /**
- * Prints the shortest string in the given DFA. The computation is done in the DFA class
- * but this function prints it and decides what the epsilon should print
- */
-void Automaton::shortestString() {
-    auto graph = new DFA(dfa);
-    string shortString = graph->giveShortestString();
-    if(shortString.length() == 0 && this->printEpsilon)
-        shortString = "epsilon";
-    cout << shortString << endl;
-}
-
-/**
  * This function assigns a nicer looking name to each set of state and thus complies
  * with the input file since the input file assumes that each state can be stored in
  * type char.
@@ -244,4 +232,45 @@ string Automaton::nicePrint(set<string> s, bool b) {
         string retValue = mystream.str();
         return retValue;
     }
+}
+
+string Automaton::setToString(set<string> S) {
+    string retS = "";
+
+    set<string>::iterator s;
+    for(s = S.begin(); s != S.end(); ++s){
+        retS += *s;
+    }
+    return retS;
+}
+
+DFA_flat_tuple * Automaton::giveTuple() {
+    auto * ft = new DFA_flat_tuple();
+    for(vector<set<string>>::size_type z = 0; z != this->dfa->states.size(); z++){
+        string stateName = setToString(this->dfa->states[z]);
+        ft->states.push_back(stateName);
+    }
+
+    for(vector<NFA_Transition*>::size_type z = 0; z != this->dfa->transitions.size(); z++){
+        auto * ftrans = new Flat_transition();
+        ftrans->initState = setToString(this->dfa->transitions[z]->initialStates);
+        ftrans->alphabet = this->dfa->transitions[z]->alphabet;
+        ftrans->nState = setToString(this->dfa->transitions[z]->newStates);
+        ft->transitions.push_back(ftrans);
+    }
+
+    for(vector<string>::size_type z = 0; z != this->dfa->finStates.size(); z++){
+        for(vector<set<string>>::size_type x = 0; x != this->dfa->states.size(); x++){
+//            isSetFinal = this->dfa->states[x].find(this->dfa->finStates[z]) != this->dfa->finStates[z].end();
+            set<string> currentSet = this->dfa->states[x];
+            if(currentSet.count(this->dfa->finStates[z])){
+                ft->finStates.push_back(setToString(this->dfa->states[x]));
+            }
+        }
+    }
+
+    ft->alphabet = this->dfa->alphabet;
+    ft->initialState = this->dfa->initialState;
+
+    return ft;
 }
