@@ -8,6 +8,7 @@
 
 #include "Intersector.h"
 
+
 Intersector::Intersector(DFA_flat_tuple *spec, DFA_flat_tuple *system, bool nicefy) {
     this->spec = spec;
     this->system = system;

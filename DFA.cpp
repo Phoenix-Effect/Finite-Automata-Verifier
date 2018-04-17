@@ -160,8 +160,5 @@ string DFA::giveShortestString() {
             shortestString = shortestStrings[z];
         }
     }
-
-
-
     return shortestString;
 }

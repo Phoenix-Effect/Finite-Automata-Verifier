@@ -10,6 +10,7 @@
 #define CODE_INTERSECTOR_H
 
 #include "Structs.h"
+#include <algorithm>
 
 class Intersector {
 private:

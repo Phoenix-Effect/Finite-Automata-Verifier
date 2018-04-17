@@ -1,0 +1,72 @@
+<!doctype html>
+<html>
+<head>
+    <title>CSE355 graph</title>
+
+    <script type="text/javascript" src="./assets/vis.min.js"></script>
+    <link href="./assets/vis.min.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="specNormal.js"></script>
+
+    <style type="text/css">
+        html,
+        body{
+            height: 100%;
+        }
+
+        #graph {
+            width: 100%;
+            height: 100%;
+            border: 1px solid lightgray;
+        }
+    </style>
+</head>
+<body>
+
+
+<div id="graph"></div>
+
+<script type="text/javascript">
+
+    // create an array with nodes
+    var nodes = new vis.DataSet(nodes);
+
+    // create an array with edges
+    var edges = new vis.DataSet(edges);
+
+    // create a network
+    var container = document.getElementById('graph');
+    var data = {
+        nodes: nodes,
+        edges: edges
+    };
+
+    var options = {
+        "nodes":{
+            shadow: true,
+            shape: 'dot'
+        },
+        "edges": {
+            "smooth": {
+                "forceDirection": "vertical",
+                "roundness": 0.45
+            }
+        },
+        "physics": {
+            "repulsion": {
+                "centralGravity": 0.3,
+                "springLength": 125,
+                "springConstant": 0.065,
+                "nodeDistance": 170
+            },
+            "minVelocity": 0.75,
+            "solver": "repulsion"
+        }
+    };
+
+    var network = new vis.Network(container, data, options);
+
+</script>
+
+
+</body>
+</html>
