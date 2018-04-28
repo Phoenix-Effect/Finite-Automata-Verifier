@@ -22,7 +22,7 @@ using namespace std;
 
 // I/O
 bool takeInputFromFile = true;
-string inputFilePath = "/Users/Suhail/Documents/University/CSE355/Optional Project/project files/exmp01_M2.txt";
+string inputFilePath = "/Users/Suhail/Documents/University/CSE355/Optional Project/project files/m3test.txt";
 
 // Other settings
 bool printEpsilonInsteadOfEmptyString = true;

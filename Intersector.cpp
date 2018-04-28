@@ -8,7 +8,13 @@
 
 #include "Intersector.h"
 
-
+/**
+ * This class takes in 2 tuples, generates the compliment of one of them
+ * and then generates an intersection of them.
+ * @param spec - The tuple for the specifications automaton
+ * @param system - The tuple for the system model
+ * @param nicefy - Boolean value, if true renames the state names from string to integers
+ */
 Intersector::Intersector(DFA_flat_tuple *spec, DFA_flat_tuple *system, bool nicefy) {
     this->spec = spec;
     this->system = system;
@@ -21,6 +27,11 @@ Intersector::Intersector(DFA_flat_tuple *spec, DFA_flat_tuple *system, bool nice
     }
 }
 
+/**
+ * Generates the compliment of the specifications automaton finding all states
+ * that are not currently in final states and then replacing the old final states
+ * with the newly filtered states
+ */
 void Intersector::makeCompliment() {
     vector<string> nFinStates;
     for(vector<string>::size_type z = 0; z != this->spec->states.size(); z++){
@@ -33,6 +44,10 @@ void Intersector::makeCompliment() {
     this->spec->finStates = nFinStates;
 }
 
+/**
+ * Generates the intersection of two tuples by making a list of new states.
+ * This function is relatively spmple in complexity.
+ */
 void Intersector::makeIntersection() {
 
     //intersect states
@@ -43,7 +58,7 @@ void Intersector::makeIntersection() {
         }
     }
 
-    //add alphabets
+    //add alphabets which are same as original machine
     intersected->alphabet = this->spec->alphabet;
 
     //initial state
@@ -72,57 +87,69 @@ void Intersector::makeIntersection() {
                 intersected->transitions.push_back(trans);
             }
         }
-    }
-
-    //all done
-
+    }//all done
 }
 
+/**
+ * Encodes state names so the combination of state names do not generate duplicates.
+ */
 void Intersector::encodeStateNames() {
     string specMachine = "SP#";
     string sysMachine = "#SYS";
 
+    //encode the state names of specifications tuple
     for(vector<string>::size_type z = 0; z != this->spec->states.size(); z++){
         this->spec->states[z] += specMachine;
     }
 
+    //encode the final state names of specifications tuple
     for(vector<string>::size_type z = 0; z != this->spec->finStates.size(); z++){
         this->spec->finStates[z] += specMachine;
     }
 
+    //encode the transitions of the specifications tuple
     for(vector<Flat_transition*>::size_type z = 0; z != this->spec->transitions.size(); z++){
         this->spec->transitions[z]->initState += specMachine;
         this->spec->transitions[z]->nState += specMachine;
     }
+
+    //encode the initial state of specifications tuple
     this->spec->initialState += specMachine;
 
-
-
+    //encode the state names of system model tuple
     for(vector<string>::size_type z = 0; z != this->system->states.size(); z++){
         this->system->states[z].insert(0, sysMachine);
     }
 
+    //encode the final state names of system model tuple
     for(vector<string>::size_type z = 0; z != this->system->finStates.size(); z++){
         this->system->finStates[z].insert(0, sysMachine);
     }
 
+    //encode the transitions of the system model tuple
     for(vector<Flat_transition*>::size_type z = 0; z != this->system->transitions.size(); z++){
         this->system->transitions[z]->initState.insert(0, sysMachine);
         this->system->transitions[z]->nState.insert(0, sysMachine);
     }
 
+    //encode the initial state of system model tuple
     this->system->initialState.insert(0, sysMachine);
-
 }
 
+/**
+ * Given a state name, alphabet and a transitions vector, returns the name of the new state
+ * @param state
+ * @param alpha
+ * @param ft
+ * @return
+ */
 string Intersector::findTransition(string state, string alpha, vector<Flat_transition*> ft){
     for(vector<Flat_transition*>::size_type z = 0; z != ft.size(); z++){
         if(ft[z]->initState == state && ft[z]->alphabet == alpha){
             return ft[z]->nState;
         }
     }
-
-    return "ERRORDUDE";
+    return "ERROR";
 }
 
 DFA_flat_tuple * Intersector::giveIntersected() {
