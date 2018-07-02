@@ -1,5 +1,4 @@
 # Finite automata verifier
--------------
 
 ## Overview
 The goal of this program is to check whether a system meets it specifications or not. This program takes in two FA A = System automaton, B = Specifications automaton and if they are NFAs then it converts them to DFAs using Gallier's subset construction. It then generates an intersection between A and compliment of B and finds strings in the new language. If a string exists in the new language it means the system does not meet the specifications.
