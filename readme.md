@@ -1,5 +1,4 @@
-# CSE355 - Optional Project
-Milestone - 2
+# Finite automata verifier
 -------------
 
 ## Overview
